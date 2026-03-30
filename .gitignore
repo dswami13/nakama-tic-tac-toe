@@ -1,0 +1,4 @@
+node_modules/
+.build/
+nakama-key.pem
+package-lock.json

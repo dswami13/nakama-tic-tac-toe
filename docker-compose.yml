@@ -1,0 +1,31 @@
+services:
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v23.1
+    command: start-single-node --insecure
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+
+  nakama:
+    image: heroiclabs/nakama:3.20.0
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+        /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
+        exec /nakama/nakama --config /nakama/data/local.yml --database.address root@cockroachdb:26257 --socket.address 0.0.0.0
+    restart: always
+    links:
+      - "cockroachdb:db"
+    depends_on:
+      - cockroachdb
+    volumes:
+      - data:/nakama/data
+      - ./build:/nakama/data/modules
+      - ./local.yml:/nakama/data/local.yml
+    ports:
+      - "7350:7350"
+      - "7351:7351"
+
+volumes:
+  data:
