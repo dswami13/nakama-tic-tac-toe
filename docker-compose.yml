@@ -1,7 +1,7 @@
 services:
   cockroachdb:
     image: cockroachdb/cockroach:latest-v23.1
-    command: start-single-node --insecure
+    command: start-single-node --insecure --cache=256MiB --max-sql-memory=256MiB
     ports:
       - "26257:26257"
       - "8080:8080"
